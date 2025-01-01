@@ -38,8 +38,7 @@ services:
             - ~/rp/docker-services/airflow/logs:/usr/local/airflow/logs
             - ./data/store_files:/usr/local/airflow/store_files_airflow
             - ./data/sql_files:/usr/local/airflow/sql_files
-            # Uncomment to include custom plugins
-            # - ./plugins:/usr/local/airflow/plugins
+            - ./plugins:/usr/local/airflow/plugins
         ports:
             - "8080:8080"
         command: webserver

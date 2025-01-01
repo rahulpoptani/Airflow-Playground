@@ -4,6 +4,7 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.mysql_operator import MySqlOperator
 from dagutils import store_data_cleaner
+from airflow.contrib.sensors.file_sensor import FileSensor
 
 default_args = {
     "owner": "airflow",
@@ -15,7 +16,8 @@ default_args = {
 
 with DAG(dag_id="store_dag", default_args=default_args, schedule_interval=timedelta(days=1),template_searchpath=['/usr/local/airflow/sql_files']) as dag:
 
-    t1=BashOperator(task_id='check_file_exists', bash_command='shasum /usr/local/airflow/store_files_airflow/raw_store_transactions.csv', retries=2, retry_delay=timedelta(seconds=5))
+    t1=FileSensor(task_id='check_file_exists', filepath='/usr/local/airflow/store_files_airflow/raw_store_transactions.csv', fs_conn_id='fs_default', poke_interval=5, timeout=60, soft_fail=True)
+    # t1=BashOperator(task_id='check_file_exists', bash_command='shasum /usr/local/airflow/store_files_airflow/raw_store_transactions.csv', retries=2, retry_delay=timedelta(seconds=5))
     t2=PythonOperator(task_id='clean_raw_csv', python_callable=store_data_cleaner)
     t3=MySqlOperator(task_id='create_mysql_table', mysql_conn_id='mysql_conn', sql='create_table.sql')
     t4=MySqlOperator(task_id='truncate_table', mysql_conn_id='mysql_conn', sql='truncate_table.sql')

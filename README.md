@@ -75,3 +75,25 @@ Note: Properties based as ENV variables in Docker Compose file will override air
     4. Use MYSQL or Postgres as the database for handling the metadata. The database needs to be separately installed.
 
 ## XCOM
+1. XCOM(Cross Communication), lets the tasks to exchange messages.
+2. It is stored in metadata database and can be accessed using UI
+3. Defined as key, value and timestamp.
+4. Tasks can pushed data via xcom_push() method and pull using xcom_pull()
+
+## Variables
+1. Variables are a way to store and retrieve arbitary content or settings as a key value pair.
+2. Can be listed, created, updated or deleted from UI
+3. These are stored in Metadata database
+4. Variable have scope in all the DAGs
+
+## Sensor Operators
+1. Sensor Operators keep executing for an event to happen and succeed when the criteria is met and fails when they time out.
+2. Types of Sensor:
+    1. File Sensor: Waits for file to arrive in directory
+    2. TimeDelta Sensor
+    3. SQL Sensor
+    4. S3 Sensor, etc
+3. Key Terms:
+    1. poke_interval: Time in seconds the sensor operator should wait between each retries.
+    2. timeout: How long the sensor operator should keep on retrying.
+    3. soft_fail: If set to True, the task and downstream task will be marked as SKIPPED instead of FAILED
